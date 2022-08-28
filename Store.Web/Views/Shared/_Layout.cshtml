@@ -1,0 +1,44 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Store.Web</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/Store.Web.styles.css" asp-append-version="true" />
+</head>
+<body>
+    <header>
+        <nav class="navbar bg-light"> 
+            <div class=container-fluid>
+            <a class="navbar-brand" style="color: black" asp-area="" asp-controller="Home" asp-action="Index"><strong>Интернет-магазин MonkeyBox</strong></a>
+            <form class="d-flex" action="@Url.Action("Index","Search")" method="get">
+                <input class="form-control me-2" type="search" name="query" placeholder="автор или название" />
+                <button class="btn btn-outline-success" type="submit">Искать</button>
+            </form>
+            <span class="navbar-text ml-auto">
+                    @{
+
+                        if(Context.Session.TryGetCart(out Cart cart) && cart.TotalCount > 0)
+                        {
+                            <a href="" >Товаров @cart.TotalCount на сумму @cart.TotalPrice$</a>
+                        }
+                        else
+                        {
+                            @:Корзина пуста
+                        }
+                }
+            </span>
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+        <main>
+            @RenderBody()
+        </main>
+    </div>
+    
+   
+</body>
+</html>
