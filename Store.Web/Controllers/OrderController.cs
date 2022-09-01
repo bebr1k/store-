@@ -12,6 +12,41 @@ namespace Store.Web.Controllers
             this.bookRepository = bookRepistory;
             this.orderRepository = orderRepository;
         }
+        public IActionResult Index()
+        {
+            if(HttpContext.Session.TryGetCart(out Cart cart))
+            {
+                var order = orderRepository.GetById(cart.OrderId);
+                OrderModel model = Map(order);
+
+                return View(model);
+            }
+            return View("Empty");
+        }
+
+        private OrderModel Map(Order order)
+        {
+            var booksIds = order.Items.Select(item => item.BookId);
+            var books = bookRepository.GetAllByIds(booksIds);
+            var itemModels = from item in order.Items
+                             join book in books on item.BookId equals book.Id
+                             select new OrderItemModel
+                             {
+                                 BookId = book.Id,
+                                 Title = book.Title,
+                                 Author = book.Author,
+                                 Price = item.Price,
+                                 Count = item.Count,
+                             };
+            return new OrderModel
+            {
+                Id = order.Id,
+                Items = itemModels.ToArray(),
+                TotalCount = order.TotalCount,
+                TotalPrice = order.TotalPrice
+            };
+        }
+
         public IActionResult AddItem (int id)
         {           
 

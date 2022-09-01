@@ -28,5 +28,10 @@ namespace Store.Memory
                 return books.Where(book => book.Title.Contains(query) || book.Author.Contains(query)).ToArray();           
         }
 
+        public Book[] GetAllByIds(IEnumerable<int> booksIds)
+        {
+            var foundBooks = from book in books join bookId in booksIds on book.Id equals bookId select book;
+            return foundBooks.ToArray();
+        }
     }
 }
