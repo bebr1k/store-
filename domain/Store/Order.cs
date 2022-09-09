@@ -35,22 +35,45 @@ namespace Store
             this.items = new List<OrderItem>(items);
 
         }
-        public void AddItem(Book book,int count)
+
+       
+        public OrderItem GetItem(int bookId)
+        {
+            int index = items.FindIndex(item => item.BookId == bookId);
+
+            if (index == -1)
+                throw new InvalidOperationException();
+            return items[index];
+        }
+
+
+        public void AddOrUpdateItem(Book book,int count)
         {
             if(book == null)
                 throw new ArgumentNullException(nameof(book));
 
-            var item = items.SingleOrDefault(x => x.BookId == book.Id);
-            if(item == null)
+            int index = items.FindIndex(item => item.BookId == book.Id);
+            if (index == -1)
             {
                 items.Add(new OrderItem(book.Id, count, book.Price));
             }
             else
             {
-                items.Remove(item);
-                items.Add(new OrderItem(book.Id, item.Count + count,book.Price));
-
+                items[index].Count += count;
             }
+
+            
+        }
+
+       
+        public void RemoveItem(int bookId)
+        {           
+            int index = items.FindIndex(x => x.BookId == bookId);
+
+            if(index == -1)            
+                throw new InvalidOperationException();          
+                          
+            items.RemoveAt(index);
         }
 
     }

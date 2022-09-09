@@ -15,10 +15,12 @@ namespace Store
             this.bookRepository = bookRepository; 
         }
         public Book[] GetAllByQuery(string query)
-        {
-            if(Book.isIsbn(query))
+        {            
+            if (Book.isIsbn(query))
+            {
                 return bookRepository.GetAllByIsbn(query);
-            return bookRepository.GetAllByTitleOrAuthor(query);
+            }            
+            return bookRepository.GetAllByTitleOrAuthor(query);                                     
         }
     }
 }

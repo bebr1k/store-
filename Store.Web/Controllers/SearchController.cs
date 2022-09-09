@@ -11,7 +11,10 @@ namespace Store.Web.Controllers
             this.bookService = bookService;
         }
         public IActionResult Index(string query)
-        {                     
+        {       if(query == null || query.Length == 0)
+            {
+                return null;
+            }              
                 var books = bookService.GetAllByQuery(query);
                 return View("Index", books);                       
         }
