@@ -13,6 +13,7 @@
                  <th scope="col">Название</th>
                  <th scope="col">Количество</th>
                  <th scope="col">Цена</th>
+                 <th scope="col"></th>
              </tr>
         </thead>
         <tbody>
@@ -24,10 +25,10 @@
                 <td>@Model.Items[i].Title</td>
                 <td  class="text-right">@Model.Items[i].Count</td>
                 <td  class="text-right">@Model.Items[i].Price $</td>
-                <td> 
-                    <form action="@Url.Action("UpdateItem","Order",Model.Items[i].BookId)" method="post">
-                        <input type="hidden" name="id" value="@Model.Id"/>
-                        <button class="btn btn-success" type="submit">В корзину</button>
+                <td class = "form-inline"> 
+                    <form action="@Url.Action("RemoveItem","Order")" method="post">
+                        <input type="hidden" name="bookId" value="@Model.Items[i].BookId"/>
+                        <button class="btn btn-danger" type="submit">-</button>
                     </form>
                 </td>
             </tr>
@@ -41,6 +42,19 @@
             </tr>
         </tfoot>
     </table>
+    <p>
+    Для оформления заказа необходимо подтвердить номер вашего мобильного.
+    Введите номер и нажмите <em>Отправить код</em>. На ваш номер будет отправлен *код подтверждения*.
+</p>
+
+<form action="@Url.Action("SendConfirmationCode","Order")" method="post">
+    <div class="form-group">
+        <label for="cellPhone">Мобильный телефон</label>
+        <input type="text" class="form-control" name="cellPhone" placeholder="+7(999)999-99-99" value="" />
+        <input type="hidden" name="id" value="@Model.Id"/>
+    </div>
+    <button type="submit" class="btn btn-success">Отправить код</button>
+</form>
 
 
 

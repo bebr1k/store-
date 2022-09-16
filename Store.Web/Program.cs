@@ -1,4 +1,5 @@
 using Store;
+using Store.Contractors;
 using Store.Memory;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,6 +16,7 @@ builder.Services.AddSession(options=>
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
 });
+builder.Services.AddSingleton<IDeliveryService,PostamateDeliveryService>();
 
 var app = builder.Build();
 

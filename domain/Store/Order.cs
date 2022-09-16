@@ -21,9 +21,12 @@ namespace Store
             get { return items.Sum(item => item.Count); }
         }
 
+        public OrderDelivery Delivery { get; set; }
+        public OrderPayment Payment { get; set; }
+
         public decimal TotalPrice
         {
-            get { return items.Sum(item => item.Price * item.Count); }
+            get { return items.Sum(item => item.Price * item.Count) + Delivery?.Amount ?? 0; }
         }
         public Order(int id, IEnumerable<OrderItem> items)
         {
@@ -36,6 +39,7 @@ namespace Store
 
         }
 
+        public string CellPhone { get; set; }
        
         public OrderItem GetItem(int bookId)
         {
@@ -68,7 +72,7 @@ namespace Store
        
         public void RemoveItem(int bookId)
         {           
-            int index = items.FindIndex(x => x.BookId == bookId);
+            int index = items.FindIndex(item => item.BookId == bookId);
 
             if(index == -1)            
                 throw new InvalidOperationException();          

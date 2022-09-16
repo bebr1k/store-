@@ -13,7 +13,7 @@ namespace Store.Web.Controllers
         public IActionResult Index(string query)
         {       if(query == null || query.Length == 0)
             {
-                return null;
+                return RedirectToAction("Index","Home");
             }              
                 var books = bookService.GetAllByQuery(query);
                 return View("Index", books);                       
