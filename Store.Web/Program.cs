@@ -17,6 +17,7 @@ builder.Services.AddSession(options=>
     options.Cookie.IsEssential = true;
 });
 builder.Services.AddSingleton<IDeliveryService,PostamateDeliveryService>();
+builder.Services.AddSingleton<IPaymentService, CashPaymentService>();
 
 var app = builder.Build();
 

@@ -60,7 +60,7 @@ namespace Store.Contractors
                 {nameof(cityId), cityId },
                 {nameof(cityName), cityName },
                 {nameof(postamateId), postamateId },
-                {nameof(postamateName), postamateId },
+                {nameof(postamateName), postamateName },
 
             };
             var description = $"Город: {cityName}\nПостамат: {postamateName}";

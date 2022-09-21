@@ -9,7 +9,8 @@ using System.Threading.Tasks;
 namespace Store
 {
     public class BookService
-    {   private readonly IBookRepository bookRepository;
+    {   
+        private readonly IBookRepository bookRepository;
         public BookService(IBookRepository bookRepository)
         {
             this.bookRepository = bookRepository; 

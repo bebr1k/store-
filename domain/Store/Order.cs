@@ -26,7 +26,7 @@ namespace Store
 
         public decimal TotalPrice
         {
-            get { return items.Sum(item => item.Price * item.Count) + Delivery?.Amount ?? 0; }
+            get { return items.Sum(item => item.Price * item.Count) + (Delivery?.Amount ?? 0m); }
         }
         public Order(int id, IEnumerable<OrderItem> items)
         {

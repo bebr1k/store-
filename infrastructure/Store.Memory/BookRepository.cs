@@ -25,7 +25,8 @@ namespace Store.Memory
 
         public Book[] GetAllByTitleOrAuthor(string query)
         {           
-                return books.Where(book => book.Title.Contains(query) || book.Author.Contains(query)).ToArray();           
+                query = query.ToLower();
+                return books.Where(book => book.Title.ToLower().Contains(query) || book.Author.ToLower().Contains(query)).ToArray();           
         }
 
         public Book[] GetAllByIds(IEnumerable<int> booksIds)
