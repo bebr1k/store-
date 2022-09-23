@@ -1,6 +1,8 @@
 using Store;
 using Store.Contractors;
 using Store.Memory;
+using Store.Web.Contractors;
+using Store.YandexKassa;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +12,8 @@ builder.Services.AddSingleton<IBookRepository, BookRepository>();
 builder.Services.AddSingleton<BookService>();
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSingleton<IOrderRepository, OrderRepository>();
+builder.Services.AddSingleton<IPaymentService, YandexKassaPaymentService>();
+builder.Services.AddSingleton<IWebContractorService, YandexKassaPaymentService>();
 builder.Services.AddSession(options=>
 {
     options.IdleTimeout = TimeSpan.FromMinutes(20);
@@ -41,5 +45,13 @@ app.UseSession();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapAreaControllerRoute(
+        name: "yandex.kassa", 
+        areaName: "YandexKassa", 
+        pattern: "YandexKassa/{controller=Home}/{action=Index}/{id?}");
 
+
+});
 app.Run();

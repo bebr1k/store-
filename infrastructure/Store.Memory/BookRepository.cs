@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using Stor;
+﻿using Stor;
 
 namespace Store.Memory
 {
