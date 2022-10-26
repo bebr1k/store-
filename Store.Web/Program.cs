@@ -1,17 +1,25 @@
 using Store;
 using Store.Contractors;
-using Store.Memory;
+using Store.Messages;
 using Store.Web.Contractors;
 using Store.YandexKassa;
+using Store.Web.App;
+using Store.Data.EF;
+using System.Configuration;
+using System.Collections.Generic;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllersWithViews();
+
+builder.Services.AddEfRepositories(builder.Configuration.GetConnectionString("Store"));
+builder.Services.AddScoped<Dictionary <Type, StoreDbContext>>();
+builder.Services.AddSingleton<DbContextFactory>();
 builder.Services.AddSingleton<IBookRepository, BookRepository>();
-builder.Services.AddSingleton<BookService>();
-builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSingleton<IOrderRepository, OrderRepository>();
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddControllersWithViews();
+builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSingleton<IPaymentService, YandexKassaPaymentService>();
 builder.Services.AddSingleton<IWebContractorService, YandexKassaPaymentService>();
 builder.Services.AddSession(options=>
@@ -22,8 +30,12 @@ builder.Services.AddSession(options=>
 });
 builder.Services.AddSingleton<IDeliveryService,PostamateDeliveryService>();
 builder.Services.AddSingleton<IPaymentService, CashPaymentService>();
+builder.Services.AddSingleton<INotificationService, DebugNotificationService>();
+builder.Services.AddSingleton<OrderService>();
+builder.Services.AddSingleton<BookService>();
 
 var app = builder.Build();
+
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

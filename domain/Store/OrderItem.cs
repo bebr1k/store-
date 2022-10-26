@@ -1,34 +1,66 @@
-﻿
+﻿using Store.Data;
+using System;
+
 namespace Store
 {
     public class OrderItem
     {
-        public int BookId { get; }
-        private int count;
+        private readonly OrderItemDto dto;
+
+        public int BookId => dto.BookId;
 
         public int Count
         {
-            get { return count; }
+            get { return dto.Count; }
             set
             {
-                ThrowIfInvalidCount(value); 
+                ThrowIfInvalidCount(value);
 
-                count = value;
+                dto.Count = value;
             }
         }
-        public decimal Price { get; }
 
-        public OrderItem(int bookId, int count, decimal price)
+        public decimal? Price
         {
-
-            BookId = bookId;
-            Count = count;
-            Price = price;
+            get => dto.Price;
+            set => dto.Price = value;
         }
-       private static void ThrowIfInvalidCount(int count)
+
+        internal OrderItem(OrderItemDto dto)
+        {
+            this.dto = dto;
+        }
+
+        private static void ThrowIfInvalidCount(int count)
         {
             if (count <= 0)
-                throw new ArgumentException("Count must be greater than zero"); 
+                throw new ArgumentOutOfRangeException("Count must be greater than zero.");
+        }
+
+        public static class DtoFactory
+        {
+            public static OrderItemDto Create(OrderDto order, int bookId, decimal? price, int count)
+            {
+                if (order == null)
+                    throw new ArgumentNullException(nameof(order));
+
+                ThrowIfInvalidCount(count);
+
+                return new OrderItemDto
+                {
+                    BookId = bookId,
+                    Price = price,
+                    Count = count,
+                    Order = order,
+                };
+            }
+        }
+
+        public static class Mapper
+        {
+            public static OrderItem Map(OrderItemDto dto) => new OrderItem(dto);
+
+            public static OrderItemDto Map(OrderItem domain) => domain.dto;
         }
     }
 }

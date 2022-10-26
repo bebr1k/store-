@@ -1,79 +1,100 @@
-﻿using Stor;
+﻿using Store.Data;
+using System;
+using System.Linq;
 
 namespace Store
 {
     public class Order
     {
-        public int Id { get; }
+        private readonly OrderDto dto;
 
-        private List<OrderItem> items;
-        public IReadOnlyCollection<OrderItem> Items
+        public int Id => dto.Id;
+
+        public string CellPhone
         {
-            get { return items; }
-        }
-        public int TotalCount
-        {
-            get { return items.Sum(item => item.Count); }
-        }
-
-        public OrderDelivery Delivery { get; set; }
-        public OrderPayment Payment { get; set; }
-
-        public decimal TotalPrice
-        {
-            get { return items.Sum(item => item.Price * item.Count) + (Delivery?.Amount ?? 0m); }
-        }
-        public Order(int id, IEnumerable<OrderItem> items)
-        {
-            if(items == null)
-                throw new ArgumentNullException(nameof(items));
-
-            Id = id;
-
-            this.items = new List<OrderItem>(items);
-
-        }
-
-        public string CellPhone { get; set; }
-       
-        public OrderItem GetItem(int bookId)
-        {
-            int index = items.FindIndex(item => item.BookId == bookId);
-
-            if (index == -1)
-                throw new InvalidOperationException();
-            return items[index];
-        }
-
-
-        public void AddOrUpdateItem(Book book,int count)
-        {
-            if(book == null)
-                throw new ArgumentNullException(nameof(book));
-
-            int index = items.FindIndex(item => item.BookId == book.Id);
-            if (index == -1)
+            get => dto.CellPhone;
+            set
             {
-                items.Add(new OrderItem(book.Id, count, book.Price));
+                if (string.IsNullOrWhiteSpace(value))
+                    throw new ArgumentException(nameof(CellPhone));
+
+                dto.CellPhone = value;
             }
-            else
+        }
+
+        public OrderDelivery Delivery
+        {
+            get
             {
-                items[index].Count += count;
+                if (dto.DeliveryUniqueCode == null)
+                    return null;
+
+                return new OrderDelivery(
+                    dto.DeliveryUniqueCode,
+                    dto.DeliveryDescription,
+                    dto.DeliveryPrice,
+                    dto.DeliveryParameters);
             }
+            set
+            {
+                if (value == null)
+                    throw new ArgumentException(nameof(Delivery));
 
-            
+                dto.DeliveryUniqueCode = value.UniqueCode;
+                dto.DeliveryDescription = value.Description;
+                dto.DeliveryPrice = value.Price;
+                dto.DeliveryParameters = value.Parameters
+                                              .ToDictionary(p => p.Key, p => p.Value);
+            }
         }
 
-       
-        public void RemoveItem(int bookId)
-        {           
-            int index = items.FindIndex(item => item.BookId == bookId);
+        public OrderPayment Payment
+        {
+            get
+            {
+                if (dto.PaymentUniqueCode== null)
+                    return null;
 
-            if(index == -1)            
-                throw new InvalidOperationException();          
-                          
-            items.RemoveAt(index);
+                return new OrderPayment(
+                    dto.PaymentUniqueCode,
+                    dto.PaymentDescription,
+                    dto.PaymentParameters);
+            }
+            set
+            {
+                if (value == null)
+                    throw new ArgumentException(nameof(Payment));
+
+                dto.PaymentUniqueCode = value.UniqueCode;
+                dto.PaymentDescription = value.Description;
+                dto.PaymentParameters = value.Parameters
+                                             .ToDictionary(p => p.Key, p => p.Value);
+            }
         }
 
+        public OrderItemCollection Items { get; }
+
+        public int TotalCount => Items.Sum(item => item.Count);
+
+        public decimal TotalPrice => Items.Sum(item => (decimal)item.Price * item.Count)
+                                   + (Delivery?.Price ?? 0m);
+
+        public Order(OrderDto dto)
+        {
+            this.dto = dto;
+            Items = new OrderItemCollection(dto);
+        }
+
+        public static class DtoFactory
+        {
+            public static OrderDto Create() => new OrderDto();
+        }
+
+        public static class Mapper
+        {
+            public static Order Map(OrderDto dto) => new Order(dto);
+
+            public static OrderDto Map(Order domain) => domain.dto;
+        }
     }
 }

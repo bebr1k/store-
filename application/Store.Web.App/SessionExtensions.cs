@@ -1,5 +1,8 @@
-﻿using Store.Web.Models;
+﻿using Microsoft.AspNetCore.Http;
+using Store.Web.App;
+using Store.Web.Models;
 using System.Text;
+
 
 namespace Store.Web
 {
@@ -8,7 +11,7 @@ namespace Store.Web
         private const string key = "Cart";
         public static void RemoveCart(this ISession session)
         {
-            session.Remove(key);
+            session.Remove(key);           
         }
 
         public static void Set(this ISession session,Cart value)      
@@ -36,11 +39,7 @@ namespace Store.Web
                     var orderId=reader.ReadInt32(); 
                     var totalCount=reader.ReadInt32();                    
                     var totalPrice = reader.ReadDecimal();
-                    value = new Cart(orderId)
-                    {
-                        TotalCount = totalCount,
-                        TotalPrice = totalPrice,
-                    };
+                    value = new Cart(orderId, totalCount, totalPrice);                   
                    
                     return true;
                 }

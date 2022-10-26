@@ -7,19 +7,19 @@ namespace Store
 
         public string Description { get; }
 
-        public decimal Amount { get; }
+        public decimal Price { get; }
 
         public IReadOnlyDictionary<string, string> Parameters { get; }
 
-        public OrderDelivery(string uniqueCode, string description, decimal amount, IReadOnlyDictionary<string,string> parameters)
+        public OrderDelivery(string uniqueCode, string description, decimal? price, IReadOnlyDictionary<string,string> parameters)
         {
             if (string.IsNullOrEmpty(uniqueCode))
-                throw new ArgumentException(nameof(uniqueCode));
+                throw new ArgumentException(nameof(price));
             if (string.IsNullOrEmpty(description))
                 throw new ArgumentException(nameof(description));
             if(parameters == null)
                 throw new ArgumentNullException(nameof(parameters));
-            Amount = amount;
+            Price = (decimal)price;
             UniqueCode = uniqueCode;
             Description = description;
             Parameters = parameters;

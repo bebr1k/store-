@@ -1,4 +1,6 @@
-﻿
+﻿using System;
+using System.Collections.Generic;
+
 namespace Store
 {
     public class OrderPayment
@@ -9,18 +11,22 @@ namespace Store
 
         public IReadOnlyDictionary<string, string> Parameters { get; }
 
-        public OrderPayment(string uniqueCode, string description,IReadOnlyDictionary<string,string> parameters)
+        public OrderPayment(string uniqueCode,
+                            string description,
+                            IReadOnlyDictionary<string, string> parameters)
         {
-            if (string.IsNullOrEmpty(uniqueCode))
+            if (string.IsNullOrWhiteSpace(uniqueCode))
                 throw new ArgumentException(nameof(uniqueCode));
-            if (string.IsNullOrEmpty(description))
+
+            if (string.IsNullOrWhiteSpace(description))
                 throw new ArgumentException(nameof(description));
-            if(parameters == null)
+
+            if (parameters == null)
                 throw new ArgumentNullException(nameof(parameters));
+
             UniqueCode = uniqueCode;
             Description = description;
             Parameters = parameters;
-
         }
     }
 }
