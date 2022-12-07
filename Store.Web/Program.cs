@@ -15,8 +15,6 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEfRepositories(builder.Configuration.GetConnectionString("Store"));
 builder.Services.AddScoped<Dictionary <Type, StoreDbContext>>();
 builder.Services.AddSingleton<DbContextFactory>();
-builder.Services.AddSingleton<IBookRepository, BookRepository>();
-builder.Services.AddSingleton<IOrderRepository, OrderRepository>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddControllersWithViews();
 builder.Services.AddDistributedMemoryCache();
